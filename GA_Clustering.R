@@ -3,6 +3,9 @@ library(tidyverse)
 library(MASS)
 library(e1071)
 library(ggplot2)
+library(EnvStats)
+
+install.packages("EnvStats")
 
 
 ##### FUNCTIONS #####
@@ -171,55 +174,23 @@ scenarios_generation <- function(){
   
   
   ## Data Set 4
-  min = c(-3,3)
-  mu2 = c(0,1)
-  mu3 = c(3,3)
-  
   n_data_points = 300
-  x1_x = runif(n_data_points/3, min = mu1[1]-1, max = mu1[1]+1)
-  boundsx1_y = c(quadratic(1,-2*mu1[2],mu1[2]*mu1[2]+(x1_x-mu1[1])*(x1_x-mu1[1])-r*r ))
-  boundsx1_y <- rbind(boundsx1_y[1:(length(boundsx1_y)/2)],boundsx1_y[((length(boundsx1_y)/2)+1):length(boundsx1_y)])
-  x1_y <- c(1:(n_data_points/3))
-  for(i in 1:n_data_points/3){
-    x1_y[i] <- runif(1, min = boundsx1_y[2,i], max = boundsx1_y[1,i])
+  
+  x1 <- rtri(n_data_points/2, min = 0, max = 2, mode = 1)
+  x2 <- rtri(n_data_points/2, min = 1, max = 3, mode = 2)
+  for(i in 1:9){
+    x1 <- cbind(x1,rtri(n_data_points/2, min = 0, max = 2, mode = 1))
+    x2 <- cbind(x2,rtri(n_data_points/2, min = 0, max = 2, mode = 1))
   }
   
-  x1 = cbind(x1_x,x1_y)
+  y1 <- rep("1",n_data_points/2)
+  y2 <- rep("2",n_data_points/2)
   
-  x2_x = runif(n_data_points/3, min = mu2[1]-1, max = mu2[1]+1)
-  boundsx2_y = c(quadratic(1,-2*mu2[2],mu2[2]*mu2[2]+(x2_x-mu2[1])*(x2_x-mu2[1])-r*r ))
-  boundsx2_y <- rbind(boundsx2_y[1:(length(boundsx2_y)/2)],boundsx2_y[((length(boundsx2_y)/2)+1):length(boundsx2_y)])
-  x2_y <- c(1:(n_data_points/3))
-  for(i in 1:n_data_points/3){
-    x2_y[i] <- runif(1, min = boundsx2_y[2,i], max = boundsx2_y[1,i])
-  }
+  y <- as.factor(c(y1, y2))
+  X <- rbind(x1, x2)
   
-  x2 = cbind(x2_x,x2_y)
-  
-  x3_x = runif(n_data_points/3, min = mu3[1]-1, max = mu3[1]+1)
-  boundsx3_y = c(quadratic(1,-2*mu3[2],mu3[2]*mu3[2]+(x3_x-mu3[1])*(x3_x-mu3[1])-r*r ))
-  boundsx3_y <- rbind(boundsx3_y[1:(length(boundsx3_y)/2)],boundsx3_y[((length(boundsx3_y)/2)+1):length(boundsx3_y)])
-  x3_y <- c(1:(n_data_points/3))
-  for(i in 1:n_data_points/3){
-    x3_y[i] <- runif(1, min = boundsx3_y[2,i], max = boundsx3_y[1,i])
-  }
-  
-  x3 = cbind(x3_x,x3_y)
-  
-  y1 <- rep("1",n_data_points/3)
-  y2 <- rep("2",n_data_points/3)
-  y3 <- rep("3",n_data_points/3)
-  
-  y <- as.factor(c(y1, y2, y3))
-  X <- rbind(x1, x2, x3)
-  
-  data_scenario2 <- data.frame(y, X)
-  colnames(data_scenario2) <- c("Y", "X1", "X2")
-  
-  #plots
-  cols = ifelse(data_scenario2[,1]== '1',2,ifelse(data_scenario2[,1]== '2',3,4))
-  plot(data_scenario2[,-1], col = cols, main = "Scenario 2")
-  legend('bottomleft', c('class 1', 'class 2', 'class 3'), pch = 1, col = c(2:4))
+  data_scenario4 <- data.frame(y, X)
+  colnames(data_scenario4) <- c("Y", "X1", "X2", "X3", "X4", "X5", "X6", "X7", "X8", "X9", "X10")
   
   
   return(list(data_scenario1, data_scenario2, data_scenario3, data_scenario4))
