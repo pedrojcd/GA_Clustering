@@ -1,3 +1,5 @@
+setwd("~/GitHub/GA_Clustering/data")
+
 ##### PACKAGES #####
 library(tidyverse)
 library(MASS)
@@ -139,16 +141,16 @@ scenarios_generation <- function(){
   min9 = c(0.7,-3.3)
   max9 = c(3.3,-0.7)
   
-  n_data_points = 270
-  x1 = runif(n_data_points/9, min = min1, max = max1)
-  x2 = runif(n_data_points/9, min = min2, max = max2)
-  x3 = runif(n_data_points/9, min = min3, max = max3)
-  x4 = runif(n_data_points/9, min = min4, max = max4)
-  x5 = runif(n_data_points/9, min = min5, max = max5)
-  x6 = runif(n_data_points/9, min = min6, max = max6)
-  x7 = runif(n_data_points/9, min = min7, max = max7)
-  x8 = runif(n_data_points/9, min = min8, max = max8)
-  x9 = runif(n_data_points/9, min = min9, max = max9)
+  n_data_points = 900
+  x1 = cbind(runif(n_data_points/9, min = min1[1], max = max1[1]),runif(n_data_points/9, min = min1[2], max = max1[2]))
+  x2 = cbind(runif(n_data_points/9, min = min2[1], max = max2[1]),runif(n_data_points/9, min = min2[2], max = max2[2]))
+  x3 = cbind(runif(n_data_points/9, min = min3[1], max = max3[1]),runif(n_data_points/9, min = min3[2], max = max3[2]))
+  x4 = cbind(runif(n_data_points/9, min = min4[1], max = max4[1]),runif(n_data_points/9, min = min4[2], max = max4[2]))
+  x5 = cbind(runif(n_data_points/9, min = min5[1], max = max5[1]),runif(n_data_points/9, min = min5[2], max = max5[2]))
+  x6 = cbind(runif(n_data_points/9, min = min6[1], max = max6[1]),runif(n_data_points/9, min = min6[2], max = max6[2]))
+  x7 = cbind(runif(n_data_points/9, min = min7[1], max = max7[1]),runif(n_data_points/9, min = min7[2], max = max7[2]))
+  x8 = cbind(runif(n_data_points/9, min = min8[1], max = max8[1]),runif(n_data_points/9, min = min8[2], max = max8[2]))
+  x9 = cbind(runif(n_data_points/9, min = min9[1], max = max9[1]),runif(n_data_points/9, min = min9[2], max = max9[2]))
   
   y1 <- rep("1",n_data_points/9)
   y2 <- rep("2",n_data_points/9)
@@ -165,6 +167,13 @@ scenarios_generation <- function(){
   
   data_scenario3 <- data.frame(y, X)
   colnames(data_scenario3) <- c("Y", "X1", "X2")
+  
+  plot(X1 ~ X2, data=data_scenario3, type='n', ylim=c(-4, 4))
+  for(i in 1:9){
+    min = (i-1)*(n_data_points/9)+1
+    max = i*(n_data_points/9)
+    text(data_scenario3$X1[min:max],data_scenario3$X2[min:max],label=i)
+  }
   
   #plots
   cols = ifelse(data_scenario3[,1]== '1',2,ifelse(data_scenario3[,1]== '2',3,4))
@@ -212,9 +221,18 @@ delta<-function(a,b,c){
 }
 
 
-# Usage
+##### APPLICATION #####
 set.seed(2020)
 
+
+## Artifical Data Sets Analysis ##
 list_scenarios <- scenarios_generation()
 
-                                       
+
+
+## Real Life Data Sets Analysis ##
+iris_data <- read.csv("Iris.csv")
+lungCancer_data <- read.csv("lung-cancer.data.csv")
+transfusion_data <- read.csv("transfusion.data.csv")
+redWineQuality_data <- read.csv("winequality-red.csv", sep = ";")                                       
+whiteWineQuality_data <- read.csv("winequality-white.csv", sep = ";")
