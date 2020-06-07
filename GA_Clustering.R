@@ -12,18 +12,7 @@ install.packages("EnvStats")
 
 ##### FUNCTIONS #####
 
-ga_clustering <- function(data, dim, n_clusters, pop_size, num_iterations, crossover_rate, mutation_rate, 
-                            selection = "roulette", crossover = ){
-  maxValues <- max(data, na.rm = TRUE)
-  minValues <- min(data, na.rm = TRUE)
-  population <- runif(pop_size, min = minValues, max = maxValues)
-  for(i in 1:pop_size-1){
-    newindividual <- c(1:(dim*n_clusters))
-    population <- cbind(population,newindividual)
-  }
-  
-}
-
+## Data Generation Functions ##
 scenarios_generation <- function(){
   
   # Data Set 1
@@ -220,6 +209,55 @@ delta<-function(a,b,c){
   b^2-4*a*c
 }
 
+## Algorithm Functions ##
+ga_clustering <- function(data, dim, n_clusters, pop_size, num_iterations, crossover_rate, mutation_rate, 
+                          selection = "roulette", crossover = ){
+  
+  # Obtain lower and upper bounds to create the population
+  maxValues <- max(data[1], na.rm = TRUE)
+  minValues <- min(data[1], na.rm = TRUE)
+  for(i in 2:dim){
+    maxValues <- c(maxValues,max(data[i], na.rm = TRUE))
+    minValues <- c(minValues,min(data[i], na.rm = TRUE))
+  }
+  
+  
+  # Create the initial population
+  population <- runif(dim*n_clusters, min = minValues, max = maxValues)
+  for(i in 1:(pop_size-1)){
+    newindividual <- runif(dim, min = minValues, max = maxValues)
+    population <- cbind(population,newindividual)
+  }
+  
+  
+  
+  
+}
+
+createClusters <- function(chromosome, n_clusters, data){
+  
+  
+}
+
+fitness <- function(chromosome, dim, data){
+  sum <- 0
+  for(i in 1:length(data[1])){
+    
+  }
+}
+
+euclideanDist <- function(point1,point2){
+  if(length(point1)!=length(point2)){
+    print("lengths missmatched")
+  }
+  else{
+    distance = 0
+    for(i in 1:length(point1)){
+      distance = distance + (point1[i]-point2[i])*(point1[i]-point2[i])
+    }
+  }
+}
+
 
 ##### APPLICATION #####
 set.seed(2020)
@@ -236,3 +274,7 @@ lungCancer_data <- read.csv("lung-cancer.data.csv")
 transfusion_data <- read.csv("transfusion.data.csv")
 redWineQuality_data <- read.csv("winequality-red.csv", sep = ";")                                       
 whiteWineQuality_data <- read.csv("winequality-white.csv", sep = ";")
+
+data <- read.csv("Iris.csv")
+data <- data[2:length(data)]
+ga_clustering(data[2,5])
