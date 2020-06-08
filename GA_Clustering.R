@@ -1,4 +1,4 @@
-setwd("~/GitHub/GA_Clustering/data")
+setwd("~/GitHub/GA_Clustering")
 
 ##### PACKAGES #####
 library(tidyverse)
@@ -337,10 +337,77 @@ clustering_metric <- function(chromosome, dim, n_clusters, data, sampleSize){
 set.seed(2020)
 
 
+
 ### Artifical Data Sets Analysis ###
 list_scenarios <- scenarios_generation()
 
 
+## Data Set 1
+dataset1 = as.data.frame(list_scenarios[1])
+data = dataset1[2:3]
+# k-means clustering
+for(test in 1:5){
+  cluster_means <- kmeans(data,2, iter.max = 1000)
+  print(cluster_means$centers)
+  print(clustering_metric(as.numeric(t(cluster_means$centers)),2,2,data,10))
+}
+
+# GA clustering
+for(test in 1:5){
+  ga_means <- ga_clustering(data, 2, 2, 10, 50, 0.8, 0.001)
+  print(clustering_metric(ga_means,2,2,data,10))
+}
+
+
+## Data Set 2
+dataset2 = as.data.frame(list_scenarios[2])
+data = dataset2[2:3]
+# k-means clustering
+for(test in 1:5){
+  cluster_means <- kmeans(data,3, iter.max = 1000)
+  print(cluster_means$centers)
+  print(clustering_metric(as.numeric(t(cluster_means$centers)),2,2,data,300))
+}
+
+# GA clustering
+for(test in 1:5){
+  ga_means <- ga_clustering(data, 2, 2, 100, 50, 0.8, 0.001)
+  print(clustering_metric(ga_means,2,2,data,10))
+}
+
+
+## Data Set 3
+dataset3 = as.data.frame(list_scenarios[3])
+data = dataset3[2:3]
+# k-means clustering
+for(test in 1:5){
+  cluster_means <- kmeans(data,9, iter.max = 1000)
+  print(cluster_means$centers)
+  print(clustering_metric(as.numeric(t(cluster_means$centers)),2,2,data,450))
+}
+
+# GA clustering
+for(test in 1:5){
+  ga_means <- ga_clustering(data, 2, 9, 100, 50, 0.8, 0.001)
+  print(clustering_metric(ga_means,2,9,data,10))
+}
+
+
+## Data Set 4
+dataset4 = as.data.frame(list_scenarios[4])
+data = dataset4[2:11]
+# k-means clustering
+for(test in 1:5){
+  cluster_means <- kmeans(data,2, iter.max = 1000)
+  print(cluster_means$centers)
+  print(clustering_metric(as.numeric(t(cluster_means$centers)),10,2,data,300))
+}
+
+# GA clustering
+for(test in 1:5){
+  ga_means <- ga_clustering(data, 10, 2, 100, 50, 0.8, 0.001)
+  print(clustering_metric(ga_means,10,2,data,300))
+}
 
 ### Real Life Data Sets Analysis ###
 iris_data <- read.csv("data/Iris.csv")
