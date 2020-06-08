@@ -6,8 +6,10 @@ library(MASS)
 library(e1071)
 library(ggplot2)
 library(EnvStats)
+library(pracma)
+library(plotrix)
 
-install.packages("EnvStats")
+install.packages("plotrix")
 
 
 ##### FUNCTIONS #####
@@ -16,11 +18,11 @@ install.packages("EnvStats")
 scenarios_generation <- function(){
   
   # Data Set 1
-  mu1 <- c(2,2)
-  mu2 <- c(-2,2)
+  mu1 <- c(1.5,2)
+  mu2 <- c(-1.5,2)
   r <- 1
   
-  n_data_points = 500
+  n_data_points = 10
   
   x1_x = runif(n_data_points/2, min = mu1[1]-1, max = mu1[1]+1)
   boundsx1_y = c(quadratic(1,-2*mu1[2],mu1[2]*mu1[2]+(x1_x-mu1[1])*(x1_x-mu1[1])-r*r ))
@@ -59,16 +61,17 @@ scenarios_generation <- function(){
   
   
   # Data Set 2
-  mu1 = c(-3,3)
+  mu1 = c(-2,2)
   mu2 = c(0,1)
-  mu3 = c(3,3)
+  mu3 = c(2,2)
+  r = 1
   
   n_data_points = 300
   x1_x = runif(n_data_points/3, min = mu1[1]-1, max = mu1[1]+1)
   boundsx1_y = c(quadratic(1,-2*mu1[2],mu1[2]*mu1[2]+(x1_x-mu1[1])*(x1_x-mu1[1])-r*r ))
   boundsx1_y <- rbind(boundsx1_y[1:(length(boundsx1_y)/2)],boundsx1_y[((length(boundsx1_y)/2)+1):length(boundsx1_y)])
   x1_y <- c(1:(n_data_points/3))
-  for(i in 1:n_data_points/3){
+  for(i in 1:(n_data_points/3)){
     x1_y[i] <- runif(1, min = boundsx1_y[2,i], max = boundsx1_y[1,i])
   }
   
@@ -78,7 +81,7 @@ scenarios_generation <- function(){
   boundsx2_y = c(quadratic(1,-2*mu2[2],mu2[2]*mu2[2]+(x2_x-mu2[1])*(x2_x-mu2[1])-r*r ))
   boundsx2_y <- rbind(boundsx2_y[1:(length(boundsx2_y)/2)],boundsx2_y[((length(boundsx2_y)/2)+1):length(boundsx2_y)])
   x2_y <- c(1:(n_data_points/3))
-  for(i in 1:n_data_points/3){
+  for(i in 1:(n_data_points/3)){
     x2_y[i] <- runif(1, min = boundsx2_y[2,i], max = boundsx2_y[1,i])
   }
   
@@ -88,7 +91,7 @@ scenarios_generation <- function(){
   boundsx3_y = c(quadratic(1,-2*mu3[2],mu3[2]*mu3[2]+(x3_x-mu3[1])*(x3_x-mu3[1])-r*r ))
   boundsx3_y <- rbind(boundsx3_y[1:(length(boundsx3_y)/2)],boundsx3_y[((length(boundsx3_y)/2)+1):length(boundsx3_y)])
   x3_y <- c(1:(n_data_points/3))
-  for(i in 1:n_data_points/3){
+  for(i in 1:(n_data_points/3)){
     x3_y[i] <- runif(1, min = boundsx3_y[2,i], max = boundsx3_y[1,i])
   }
   
@@ -107,6 +110,12 @@ scenarios_generation <- function(){
   #plots
   cols = ifelse(data_scenario2[,1]== '1',2,ifelse(data_scenario2[,1]== '2',3,4))
   plot(data_scenario2[,-1], col = cols, main = "Scenario 2")
+  draw.circle(mu1[1],mu1[2],radius=1.1,nv=100,border="red",col="transparent",lty=1,density=NULL,
+              angle=45,lwd=1)
+  draw.circle(mu2[1],mu2[2],radius=1.1,nv=100,border="green",col="transparent",lty=1,density=NULL,
+              angle=45,lwd=1)
+  draw.circle(mu3[1],mu3[2],radius=1.1,nv=100,border="blue",col="transparent",lty=1,density=NULL,
+              angle=45,lwd=1)
   legend('bottomleft', c('class 1', 'class 2', 'class 3'), pch = 1, col = c(2:4))
   
   
@@ -130,16 +139,16 @@ scenarios_generation <- function(){
   min9 = c(0.7,-3.3)
   max9 = c(3.3,-0.7)
   
-  n_data_points = 900
-  x1 = cbind(runif(n_data_points/9, min = min1[1], max = max1[1]),runif(n_data_points/9, min = min1[2], max = max1[2]))
-  x2 = cbind(runif(n_data_points/9, min = min2[1], max = max2[1]),runif(n_data_points/9, min = min2[2], max = max2[2]))
-  x3 = cbind(runif(n_data_points/9, min = min3[1], max = max3[1]),runif(n_data_points/9, min = min3[2], max = max3[2]))
-  x4 = cbind(runif(n_data_points/9, min = min4[1], max = max4[1]),runif(n_data_points/9, min = min4[2], max = max4[2]))
-  x5 = cbind(runif(n_data_points/9, min = min5[1], max = max5[1]),runif(n_data_points/9, min = min5[2], max = max5[2]))
-  x6 = cbind(runif(n_data_points/9, min = min6[1], max = max6[1]),runif(n_data_points/9, min = min6[2], max = max6[2]))
-  x7 = cbind(runif(n_data_points/9, min = min7[1], max = max7[1]),runif(n_data_points/9, min = min7[2], max = max7[2]))
-  x8 = cbind(runif(n_data_points/9, min = min8[1], max = max8[1]),runif(n_data_points/9, min = min8[2], max = max8[2]))
-  x9 = cbind(runif(n_data_points/9, min = min9[1], max = max9[1]),runif(n_data_points/9, min = min9[2], max = max9[2]))
+  n_data_points = 450
+  x1 = cbind(rtri(n_data_points/9, -3.3, -0.7, -2),rtri(n_data_points/9, 0.7, 3.3, 2))
+  x2 = cbind(rtri(n_data_points/9, -1.3, 1.3, 0)  ,rtri(n_data_points/9, 0.7, 3.3, 2))
+  x3 = cbind(rtri(n_data_points/9, 0.7, 3.3, 2)   ,rtri(n_data_points/9, 0.7, 3.3, 2))
+  x4 = cbind(rtri(n_data_points/9, -3.3, -0.7, -2),rtri(n_data_points/9, -1.3, 1.3, 0))
+  x5 = cbind(rtri(n_data_points/9, -1.3, 1.3, 0)  ,rtri(n_data_points/9, -1.3, 1.3, 0))
+  x6 = cbind(rtri(n_data_points/9, 0.7, 3.3, 2)   ,rtri(n_data_points/9, -1.3, 1.3, 0))
+  x7 = cbind(rtri(n_data_points/9, -3.3, -0.7, -2),rtri(n_data_points/9, -3.3, -0.7, -2))
+  x8 = cbind(rtri(n_data_points/9, -1.3, 1.3, 0)  ,rtri(n_data_points/9, -3.3, -0.7, -2))
+  x9 = cbind(rtri(n_data_points/9, 0.7, 3.3, 2)   ,rtri(n_data_points/9, -3.3, -0.7, -2))
   
   y1 <- rep("1",n_data_points/9)
   y2 <- rep("2",n_data_points/9)
@@ -157,18 +166,13 @@ scenarios_generation <- function(){
   data_scenario3 <- data.frame(y, X)
   colnames(data_scenario3) <- c("Y", "X1", "X2")
   
+  #Plots
   plot(X1 ~ X2, data=data_scenario3, type='n', ylim=c(-4, 4))
   for(i in 1:9){
     min = (i-1)*(n_data_points/9)+1
     max = i*(n_data_points/9)
     text(data_scenario3$X1[min:max],data_scenario3$X2[min:max],label=i)
   }
-  
-  #plots
-  cols = ifelse(data_scenario3[,1]== '1',2,ifelse(data_scenario3[,1]== '2',3,4))
-  plot(data_scenario2[,-1], col = cols, main = "Scenario 3")
-  legend('bottomleft', c('class 1', 'class 2', 'class 3', 'class 4', 'class 5', 'class 6', 'class 7', 'class 8', 'class 9'),
-         pch = 1, col = c(2:4))
   
   
   ## Data Set 4
@@ -211,8 +215,9 @@ delta<-function(a,b,c){
 
 ## Algorithm Functions ##
 ga_clustering <- function(data, dim, n_clusters, pop_size, num_iterations, crossover_rate, mutation_rate, 
-                          selection = "roulette", crossover = ){
+                          selection = "roulette", crossover = "single"){
   
+  sampleSize <- nrow(data)
   # Obtain lower and upper bounds to create the population
   maxValues <- max(data[1], na.rm = TRUE)
   minValues <- min(data[1], na.rm = TRUE)
@@ -221,41 +226,110 @@ ga_clustering <- function(data, dim, n_clusters, pop_size, num_iterations, cross
     minValues <- c(minValues,min(data[i], na.rm = TRUE))
   }
   
-  
   # Create the initial population
   population <- runif(dim*n_clusters, min = minValues, max = maxValues)
   for(i in 1:(pop_size-1)){
-    newindividual <- runif(dim, min = minValues, max = maxValues)
-    population <- cbind(population,newindividual)
+    population <- cbind(population,runif(dim*n_clusters, min = minValues, max = maxValues))
   }
   
-  
-  
-  
-}
-
-createClusters <- function(chromosome, n_clusters, data){
-  
-  
-}
-
-fitness <- function(chromosome, dim, data){
-  sum <- 0
-  for(i in 1:length(data[1])){
-    
-  }
-}
-
-euclideanDist <- function(point1,point2){
-  if(length(point1)!=length(point2)){
-    print("lengths missmatched")
-  }
-  else{
-    distance = 0
-    for(i in 1:length(point1)){
-      distance = distance + (point1[i]-point2[i])*(point1[i]-point2[i])
+  # Define the fitness of the initial population
+  fitnessOfPop <- c(fitness(chromosome = population[1:(n_clusters*dim),], dim = dim, n_clusters = n_clusters, data = data, sampleSize))
+  maxFitness = fitnessOfPop[1]
+  best_hypothesis <- population[1:(n_clusters*dim),1]
+  for(i in 2:pop_size){
+    fitnessOfPop <- cbind(fitnessOfPop,fitness(chromosome = population[1:(n_clusters*dim),i], dim = dim, n_clusters = n_clusters, data = data, sampleSize))
+    if(maxFitness < fitnessOfPop[i]){
+      maxFitness = fitnessOfPop[i]
+      best_hypothesis <- population[1:(n_clusters*dim),i]
     }
   }
+  fitnessOfPop <- c(fitnessOfPop)
+  # Define parameters
+  numOfCrossoverPopulation <- as.integer(crossover_rate*pop_size)
+  if(mod(numOfCrossoverPopulation,2)==1){
+    numOfCrossoverPopulation = numOfCrossoverPopulation+1
+  }
+  numOfSelected <- as.integer(pop_size-numOfCrossoverPopulation)
+  #Simulation
+  for(i in 1:num_iterations){
+    
+    print(1/maxFitness)
+    
+    probability <- fitnessOfPop
+    probability <- c(probability/sum(probability))
+    
+    #Selection
+    newpopulationIndexes <- sample(1:length(probability),size = numOfSelected,prob=probability)
+    newpopulation <- population[1:(n_clusters*dim),newpopulationIndexes]
+      
+    #Crossover
+    for(j in 1:(numOfCrossoverPopulation/2)){
+      parentsIndexes <- sample(1:pop_size,size=2,prob=probability)
+      parents <- population[1:(n_clusters*dim),parentsIndexes]
+      random <- sample(1:(n_clusters*dim), size =1)
+        
+      temp <- parents[random:(n_clusters*dim),1]
+      parents[random:(n_clusters*dim),1] <- parents[random:(n_clusters*dim),2]
+      parents[random:(n_clusters*dim),2] <- temp
+      newpopulation <- cbind(newpopulation,parents[1:(n_clusters*dim),1],parents[1:(n_clusters*dim),2])
+    }
+    
+    #Mutation
+    for(j in 1:pop_size){
+      random <- runif(1,min=0,max=1)
+      
+      if(random<mutation_rate){
+        random <- runif(1,min=-1,max=1)
+        index <- sample(1:(n_clusters*dim), size =1)
+          
+        if(newpopulation[index]==0){
+          newpopulation[index] <- newpopulation[index]+2*random
+        }
+        else{
+          newpopulation[index] <- newpopulation[index]+2*random*newpopulation[index]
+        }
+      }
+      
+    }
+    
+    #Replace population
+    population <- newpopulation
+    
+    #Recompute fitness values
+    for(i in 1:pop_size){
+      fitnessOfPop[i] <- fitness(chromosome = population[1:(n_clusters*dim),i], dim = dim, n_clusters = n_clusters, data = data, sampleSize = sampleSize)
+      if(maxFitness < fitnessOfPop[i]){
+        maxFitness = fitnessOfPop[i]
+        best_hypothesis <- population[1:(n_clusters*dim),i]
+      }
+    }
+  }
+  
+  print(1/maxFitness)
+  print(best_hypothesis)
+  
+  return(best_hypothesis)
+  
+}
+
+fitness <- function(chromosome, dim, n_clusters, data, sampleSize){
+  return(1/clustering_metric(chromosome, dim, n_clusters, data, sampleSize))
+}
+
+clustering_metric <- function(chromosome, dim, n_clusters, data, sampleSize){
+  sum <- 0
+  for(x in 1:sampleSize){
+    min <- dist(rbind(chromosome[1:dim], data[x,1:dim]))
+    for(j in 1:(n_clusters-1)){
+      newdist <- dist(rbind(chromosome[1:dim], data[x,1:dim]))
+      if(min>newdist){
+        min <- newdist
+      }
+    }
+    sum <- sum + min
+  }
+  
+  return(as.numeric(sum))
 }
 
 
@@ -263,18 +337,44 @@ euclideanDist <- function(point1,point2){
 set.seed(2020)
 
 
-## Artifical Data Sets Analysis ##
+### Artifical Data Sets Analysis ###
 list_scenarios <- scenarios_generation()
 
 
 
-## Real Life Data Sets Analysis ##
-iris_data <- read.csv("Iris.csv")
-lungCancer_data <- read.csv("lung-cancer.data.csv")
-transfusion_data <- read.csv("transfusion.data.csv")
-redWineQuality_data <- read.csv("winequality-red.csv", sep = ";")                                       
-whiteWineQuality_data <- read.csv("winequality-white.csv", sep = ";")
+### Real Life Data Sets Analysis ###
+iris_data <- read.csv("data/Iris.csv")
+lungCancer_data <- read.csv("data/lung-cancer.data.csv")
+transfusion_data <- read.csv("data/transfusion.data.csv")
+redWineQuality_data <- read.csv("data/winequality-red.csv", sep = ";")                                       
+whiteWineQuality_data <- read.csv("data/winequality-white.csv", sep = ";")
 
-data <- read.csv("Iris.csv")
-data <- data[2:length(data)]
-ga_clustering(data[2,5])
+## Iris Data Test
+data <- iris_data[2:5]
+
+# k-means test
+for(test in 1:5){
+  cluster_means <- kmeans(data,3, iter.max = 1000)
+  print(cluster_means$centers)
+  print(clustering_metric(c(cluster_means$centers[1,1:4],cluster_means$centers[2,1:4],cluster_means$centers[3,1:4]),
+                4,3,data,150))
+}
+
+# GA clustering
+for(test in 1:5){
+  ga_means <- ga_clustering(data, 4, 3, 100, 100, 0.8, 0.001)
+  print(clustering_metric(ga_means,4,3,data,150))
+}
+
+## Red Wine Data Test
+data <- redWineQuality_data[1:11]
+for(test in 1:5){
+  cluster_means <- kmeans(data,3, iter.max = 1000)
+  print(cluster_means$centers)
+  metricVector <- c(cluster_means$centers[1:4])
+}
+
+ga_means <- ga_clustering(data, 11, 6, 10, 100, 0.8, 0.001)
+
+
+# White Wine Data Test
