@@ -484,6 +484,6 @@ for(test in 1:5){
 
 #GA clustering
 for(test in 1:5){
-  ga_means <- ga_clustering(data, 54, 3, 100, 100, 0.8, 0.001)
+  ga_means <- ga_clustering(data, 54, 3, 50, 50, 0.8, 0.001)
   print(clustering_metric(ga_means,54,n_clusters = 3,data,31))
 }
