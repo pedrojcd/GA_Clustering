@@ -457,6 +457,7 @@ for(test in 1:5){
 }
 
 
+set.seed(2020)
 
 ## Transfusion Data Test
 data <- transfusion_data[1:4]
@@ -482,6 +483,7 @@ for(test in 1:5){
   print(clustering_metric(as.numeric(t(cluster_means$centers)),54,n_clusters = 3,data,31))
 }
 
+set.seed(2020)
 #GA clustering
 for(test in 1:5){
   ga_means <- ga_clustering(data, 54, 3, 50, 50, 0.8, 0.001)
