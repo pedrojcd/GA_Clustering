@@ -111,12 +111,12 @@ scenarios_generation <- function(){
   
   #plots
   cols = ifelse(data_scenario2[,1]== '1',2,ifelse(data_scenario2[,1]== '2',3,4))
-  plot(data_scenario2[,-1], col = cols, main = "Data Set 2")
-  draw.circle(mu1[1],mu1[2],radius=1.3,nv=200,border="red",col="transparent",lty=1,density=NULL,
+  plot(data_scenario2[,-1], col = cols, ylim=c(-0.2, 4.2))
+  draw.circle(mu1[1],mu1[2],radius=1.1,nv=200,border="red",col="transparent",lty=1,density=NULL,
               angle=45,lwd=1)
-  draw.circle(mu2[1],mu2[2],radius=1.3,nv=200,border="green",col="transparent",lty=1,density=NULL,
+  draw.circle(mu2[1],mu2[2],radius=1.1,nv=200,border="green",col="transparent",lty=1,density=NULL,
               angle=45,lwd=1)
-  draw.circle(mu3[1],mu3[2],radius=1.3,nv=200,border="blue",col="transparent",lty=1,density=NULL,
+  draw.circle(mu3[1],mu3[2],radius=1.1,nv=200,border="blue",col="transparent",lty=1,density=NULL,
               angle=45,lwd=1)
   legend('bottomleft', c('class 1', 'class 2', 'class 3'), pch = 1, col = c(2:4))
   
@@ -169,7 +169,7 @@ scenarios_generation <- function(){
   colnames(data_scenario3) <- c("Y", "X1", "X2")
   
   #Plots
-  plot(X1 ~ X2, data=data_scenario3, type='n', ylim=c(-4, 4), main = "Data Set 3")
+  plot(X1 ~ X2, data=data_scenario3, type='n', ylim=c(-4, 4))
   for(i in 1:9){
     min = (i-1)*(n_data_points/9)+1
     max = i*(n_data_points/9)
